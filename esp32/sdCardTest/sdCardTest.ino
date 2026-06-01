@@ -11,7 +11,7 @@ void setup() {
     return;
   }
 
-  Serial.println("SD car ready");
+  Serial.println("SD card ready");
 
   File file = SD.open("/test.txt", FILE_WRITE);
 
