@@ -30,6 +30,7 @@ unsigned long lastRead = 0;
 const unsigned long readInterval = 100; // read sensors every 100 ms
 
 void setup() {
+  Wire.begin(41,42);
   Serial.begin(115200);
   setupMPU();
   setupBME();
