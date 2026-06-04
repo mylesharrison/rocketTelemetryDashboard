@@ -12,8 +12,10 @@ def graphPlot(time_ms, altitude):
     # Append time and altitude to lists for graphing
     times.append(float(time_ms))
     altitudes.append(float(altitude))
-#update graph as new data comes in        
-    if len(times) > 50:
+#update graph as new data comes in      
+    MAX_POINTS = 50
+
+    if len(times) > MAX_POINTS:
         times.pop(0)
         altitudes.pop(0)
     update_graph(times, altitudes)
