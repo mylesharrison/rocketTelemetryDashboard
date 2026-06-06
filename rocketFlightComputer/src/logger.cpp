@@ -9,16 +9,17 @@
 #define SD_MOSI 35
 #define SD_MISO 34
 
-SPIClass sdSPI(FSPI);
+SPIClass sdSPI(HSPI);
 bool sdReady = false;
 
-void setupLogger(){
+bool setupLogger(){
     sdSPI.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS);
     Serial.println("SPI STARTED");
 
     if (!SD.begin(SD_CS, sdSPI)) {
         Serial.println("SD Card Initialization Failed!");
-        return;
+        sdReady = false;
+        return false;
   }
 
     Serial.println("SD Card Ready.");
@@ -28,24 +29,30 @@ void setupLogger(){
 
     File file = SD.open("/telemetryData.csv", FILE_WRITE);
 
-    if (file) {
-        file.println("time,ax,ay,az,gx,gy,gz,mpuTemp,bmeTemp,altitude,pressure,humidity");
-        file.close();
-        Serial.println("telemetryData.csv Ready.");
-  } else {
-    Serial.println("Could not open telemetryData.csv!");
-  }
+    if (!file) {
+        Serial.println("Could not open telemetryData.csv");
+        sdReady = false;
+        return false;
+    }
+
+    file.println("time,ax,ay,az,gx,gy,gz,mpuTemp,bmeTemp,altitude,pressure,humidity");
+    file.close();
+
+    Serial.println("telemetryData.csv OK");
+    return true;
 }  
-void logTelemetryCSV(String row){
-    if (sdReady) {
+void logTelemetryCSV(const String& row) {
+    if (!sdReady) {
+        return;
+    }
+
     File file = SD.open("/telemetryData.csv", FILE_APPEND);
 
     if (file) {
         file.println(row);
         file.close();
     } else {
-      Serial.println("Could not open file!");
-        }
+        Serial.println("WARNING: Could not open telemetryData.csv during logging");
     }
 }
 

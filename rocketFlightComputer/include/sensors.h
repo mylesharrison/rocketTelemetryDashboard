@@ -2,8 +2,8 @@
 #ifndef SENSORS_H
 #define SENSORS_H
 
-void setupMPU();
-void setupBME();
+bool setupMPU();
+bool setupBME();
 
 String getTelemetryCSV();
 

@@ -56,28 +56,31 @@ void printBMEData() {
   Serial.println();
 }
 
-void setupBME() {
+bool setupBME() {
   unsigned status = bme.begin(0x76);
 
   if (!status) {
-    Serial.println("Failed to find BME280");
-    while (1) delay(10);
+    Serial.println("BME280 init failed! Failed to find BME280");
+    return false;
   }
 
   Serial.println("BME280 Found");
+  return true;
 }
 
-void setupMPU() {
+bool setupMPU() {
   if (!mpu.begin(0x68)) {
-    Serial.println("Failed to find MPU6050");
-    while (1) delay(10);
+    Serial.println("MPU6050 init failed! Failed to find MPU6050");
+    return false;
   }
 
-  Serial.println("MPU6050 Found!");
+  Serial.println("MPU6050 Found");
 
   mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
   mpu.setGyroRange(MPU6050_RANGE_500_DEG);
   mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
+
+  return true;
 }
 
 String getTelemetryCSV() {
